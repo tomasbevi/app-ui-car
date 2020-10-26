@@ -1,9 +1,6 @@
 #  UI Aplication about offers vehicles for hire, made it on React Native.
 
-![Image of Rapicar]
-(https://www.tomasbevi.com.ar/files/captura1.png)
-(https://www.tomasbevi.com.ar/files/captura2.png)
-(https://www.tomasbevi.com.ar/files/captura3.png)
+![Image of Rapicar](https://www.tomasbevi.com.ar/files/captura1.png)
 
 ### Installation
 

@@ -1,8 +1,6 @@
 import React from 'react';
 import {StatusBar, Image, View , SafeAreaView, TextInput , Button, Switch, TouchableWithoutFeedback, Alert} from 'react-native';
-import styled from 'styled-components';
-import  {AntDesign} from '@expo/vector-icons';
-import { FontAwesome5 } from '@expo/vector-icons'; 
+import styled from 'styled-components'; 
 import { Actions } from 'react-native-router-flux';
 
 function LoginScreen(props) {
@@ -18,7 +16,6 @@ function LoginScreen(props) {
                 <SafeAreaView>
                     <MainContent>
                         <ImagenLogo source={require('../assets/logo.png')} />
-                        
                     </MainContent>
                     <BottomContent>
                             <Text dark smalllarge>Email</Text>

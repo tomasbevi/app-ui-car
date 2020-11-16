@@ -1,0 +1,35 @@
+mutation login($slug: String!, $password: String!) {
+     login(input: {identifier: $slug, password: $password}) {
+            jwt
+            user{
+              id
+            }
+     }
+}
+ 
+mutation register($email: String!, $username: String!, $password: String!) {
+     register(input: {email: $email, username: $username, password: $password}) {
+            user {id, username, email}, jwt
+     }
+}
+
+mutation createSolicitude($input: createSolicitudeInput!){
+  	createSolicitude(input:  $input){
+     solicitude{
+      id
+      estado
+      altura
+    }
+  }
+}
+
+mutation updateSolicitude($input:updateSolicitudeInput){
+  updateSolicitude(input: $input){
+    	solicitude{
+        id
+        estado
+        updatedAt
+      }
+  }
+}
+

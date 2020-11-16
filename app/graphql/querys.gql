@@ -1,0 +1,23 @@
+query solicitudes($user: String!){
+  solicitudes(where: {user: $user}, sort: "createdAt:DESC" , limit: 5){
+        id
+        calle
+        altura
+        comentario
+        estado
+        createdAt
+  }
+}
+query solicitudesById($id: ID!){
+    solicitudes(where:{ id : $id}){
+      	id
+      	calle
+        altura
+        comentario
+        estado
+        createdAt
+    }
+}
+
+
+

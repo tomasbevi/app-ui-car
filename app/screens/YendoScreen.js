@@ -1,56 +1,67 @@
-import React , {useState , useEffect} from 'react';
-import {StatusBar, Image, View , SafeAreaView, TextInput , Button, Switch, ScrollView, Alert} from 'react-native';
-import styled from 'styled-components';
+import React , {useState } from 'react';
+import {StatusBar, SafeAreaView, } from 'react-native';
 import  {AntDesign} from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons'; 
 import { Actions } from 'react-native-router-flux';
-const solicitud = 
-(               
-    {id: '1',
-    estado: 2,
-    direccion: 'Ollavarria',
-    altura: '1422',
-    mensaje: 'Tocame bocina dos veces y salgo.',
-    fecha: "14/10/2020"}
-);
+import { Container, BackgroundImg, MenuBar, Back, MainContent, TitleContent, Text, Divider, BottomContent , TextTitulo} from './YendoScreenStyle';
+import { useQuery } from '@apollo/client';
+import { useDispatch } from 'react-redux'
+import DetailsYendo from "../components/DetailsYendo"
 
-function YendoScreen(props) {
-    
+import {solicitudesById as RESULTADOS_SOLICITUDE} from '../graphql/querys.gql';
+
+/*
+
+Tipo de estados de la solicitud
+
+0 - Solicitada (Esperando confirmación)  Verde / Quiero Cancelar
+1 - Aceptada (Aceptada, en camino) Verde / LLego y Quiero Cancealr
+3 - Finalizada (Cuando concluye) Amarillo / 0 botones
+4 - Cancelada (Se cancela y no se completa) Rojo / 0 botones
+
+;*/
+
+
+const YendoScreen = (props) => {
+  const dispatch = useDispatch()
+  const id = props.data
+  !id ? Actions.solicitar() : ''
+  const { data , loading, error } = useQuery(RESULTADOS_SOLICITUDE,  {
+    variables: { id }, pollInterval: 5
+  })
+
+    loading ? dispatch({type: 'set', spinner: true }) :  dispatch({type: 'set', spinner: false })
+
     let [colorfondo , changecolor] = useState("#1F8933");
     
-    const botonLlego = () =>
-    Alert.alert(
-      "Ya llego?",
-      "Avisanos si ya te pasaron a buscar!",
-      [
-        {
-          text: "No",
-          onPress: () => console.log("Nada"),
-          style: "cancel"
-        },
-        { text: "Si", onPress: () => Actions.solicitar() }
-      ],
-      { cancelable: false }
-    );
 
-    const botonCancelar = () =>
-    Alert.alert(
-      "Cancelar Auto",
-      "Estas seguro que queres cancelar?",
-      [
-        {
-          text: "No",
-          onPress: () => console.log("No Cancelo!"),
-          style: "cancel"
-        },
-        { text: "Si", onPress: () => Actions.solicitar()  }
-      ],
-      { cancelable: false }
-    );
-
-    
+    if(data){
+    const variable = data.solicitudes[0].estado;
+    let {color, tituloestado, texto}=""
+    switch (variable) {
+      case "0":
+        color="#449e44";
+        tituloestado="Esperando Confirmación";
+        texto="Su solicitud fue enviada, a la espera de confirmación.";
+      break;
+      case "1":
+        color="#449e44";
+        tituloestado="En Camino";
+        texto="Llega aproximadamente en 20 minutos.";
+      break;
+      case "2":
+        color="#FBC02D";
+        tituloestado="Finalizado";
+        texto="Este viaje finalizo.";
+      break;
+      case "3":
+        color="#d4d4d4";
+        tituloestado="Cancelado";
+        texto="El viaje fue cancelado.";
+      break;
+    }
     return (
-        <Container style={{backgroundColor:colorfondo}}>
+        <Container style={{backgroundColor:color}}>
             <StatusBar barStyle='dark-content'></StatusBar>
             <BackgroundImg source={require('../assets/background.jpg')}>
                 <SafeAreaView>
@@ -62,103 +73,46 @@ function YendoScreen(props) {
                     </MenuBar>
                     <MainContent>
                         <TitleContent>
-                            <Text onPress={() => changecolor(colorfondo = "#FBC02D")} title dark >En Camino <AntDesign name="check" size={20} /></Text>
+                            <TextTitulo bold dark >{tituloestado} <AntDesign name="check" size={20} /></TextTitulo>
                             <Divider/>
-                            <Text dark smalllarge>Llega en aproximadamente 20 minutos</Text>
+                            <Text dark smalllarge>{texto}</Text>
                         </TitleContent>
                     </MainContent>
-                    <BottomContent style={{backgroundColor:colorfondo}}>
-                    <ScrollView onScroll={console.log("test")}>
-                            <Text dark smalllarge>Te estámos yendo a buscar a la dirección</Text>
-                            <DividerEmpty x1/>
-                             <Text dark large><AntDesign name="check" size={15} /> {solicitud.direccion} {solicitud.altura} - Dolores</Text>
-                            <DividerEmpty x2/>
-                            <Boton1  onPress={botonLlego} title="Ya Llego!"/>
-                            <DividerEmpty x1/>
-                            <Boton1  onPress={botonCancelar} title="Quiero Cancelar"/>
-                    </ScrollView>
+                    <BottomContent style={{backgroundColor:color}}>
+                      <DetailsYendo
+                      data={data.solicitudes[0]}
+                      />
                     </BottomContent>
                 </SafeAreaView>
             </BackgroundImg>
         </Container>
     );
-}
-
-
-const Container = styled.View`
-    flex:1;
-    background-color: #FFD740
-`;
-const Text = styled.Text`
-    color: ${(props) => props.dark ? "#000" : "#FFF"};
-
-   
-    ${({title , large , small , smalllarge}) =>{
-        switch (true) {
-            case title:
-                return `font-size:30px;`;
-            case large:
-                return `font-size:20px;`;
-            case smalllarge:
-                return `font-size:15px;`;
-            case small:
-                return `font-size:13px;`;
-        }
-    }}
-`;
-const BackgroundImg = styled.ImageBackground`
-    width:100%;
-`;
-
-const MenuBar = styled.View`
-    flex-direction: row;
-    justify-content: space-between;
-    padding:16px;
-`;
-
-const Back = styled.View`
-    flex-direction: row;
-    align-items: center;
-`;
-
-const MainContent = styled.View`
-    padding: 0 32px;
-    margin: 200px 0 30px 0;
-`;
-
-const TitleContent = styled.View``;
-
-const BottomContent = styled.View`
-        padding: 40px 20px 0px 20px;
-        border-top-left-radius: 40px;
-        border-top-right-radius: 40px;
-`;
-
-const Divider = styled.View`
-    border-bottom-color: #000;
-    border-bottom-width: 2px;
-    width:150px;
-    margin:8px 0;
-`;
-const DividerEmpty = styled.View`
-${({x1 , x2 , x3}) =>{
-    switch (true) {
-        case x1:
-            return `margin:5px;`;
-        case x2:
-            return `margin:10px;`;
-        case x3:
-            return `margin:15px;`;
+    }else{
+      return ( <Container style={{backgroundColor:colorfondo}}>
+        <StatusBar barStyle='dark-content'></StatusBar>
+        <BackgroundImg source={require('../assets/background.jpg')}>
+            <SafeAreaView>
+                <MenuBar>
+                    <Back>
+                        <AntDesign onPress={Actions.pop} name="arrowleft" size={24}/>
+                    </Back>
+                    <FontAwesome5 onPress={Actions.historial} name="bars" size={24}/>
+                </MenuBar>
+                <MainContent>
+                    <TitleContent>
+                        <Text onPress={() => changecolor(colorfondo = "#FBC02D")} title dark >Cargando... <AntDesign name="check" size={20} /></Text>
+                        <Divider/>
+                        <Text dark smalllarge>Cargando...</Text>
+                    </TitleContent>
+                </MainContent>
+                <BottomContent style={{backgroundColor:colorfondo}}>
+                
+                </BottomContent>
+            </SafeAreaView>
+        </BackgroundImg>
+    </Container>)
     }
-}}
-    
-`;
-
-const Boton1 = styled.Button`
-    background-color: #30F9BB;
-    height:100px;
-`;
-
+}
 
 
 export default YendoScreen;

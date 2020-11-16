@@ -1,126 +1,148 @@
-import React from 'react';
-import {StatusBar, Image, View , SafeAreaView, TextInput , Button, Switch, TouchableWithoutFeedback, Alert} from 'react-native';
-import styled from 'styled-components'; 
+import React, {useState } from 'react';
+import {StatusBar, SafeAreaView, StyleSheet} from 'react-native';
+import  BotonCustom  from '../components/Botton';
+import { useDispatch } from 'react-redux'
 import { Actions } from 'react-native-router-flux';
+import { Container, BackgroundImg, MainContent, ImagenLogo, BottomContent, Text, DividerEmpty, TextoInput, Boton1 } from './LoginScreenStyle';
+import {  useFormik  } from 'formik';
+import * as Yup from 'yup';
 
-function LoginScreen(props) {
+import * as SecureStore from 'expo-secure-store';
 
-    const botonLogin = () =>{
-        Actions.solicitar()
-};
+import SpinnerC from "../components/Spineer"
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { useMutation } from '@apollo/client';
+
+import {login as LOGIN_MUTATION} from '../graphql/mutations.gql';
+
+const LoginScreen = () => {
+
+ 
+    const dispatch = useDispatch()
+
+    const [mensaje , setMensaje] = useState(null)
+
+    const [ login_usuario ] = useMutation(LOGIN_MUTATION);
+
+    const mostrarMensaje = () =>{
+        return(
+            <Text>{mensaje}</Text>
+        )
+    }
+
+
+    const formik = useFormik({
+        initialValues:  {
+            email:'',
+             contrasena:'',
+        },
+        validationSchema: Yup.object({
+                email: Yup.string().email('Email invalido.').required('El email es obligatoria.'),
+                contrasena: Yup.string().required('La contraseña es obligatoria.').min(6, 'La contraseña tiene que tener al menos 6 caracteres.'),
+        }),
+        onSubmit: async values => {
+            dispatch({type: 'set', spinner: true })
+
+            const password = values.contrasena 
+            const slug = values.email
+   
+            try { 
+               setMensaje("Cargando...")
+                const resultados = await login_usuario({
+                    variables: { 
+                       slug , password
+                      }
+                 })
+                const token = await resultados.data.login.jwt
+                const user = await resultados.data.login.user.id
+                dispatch({type: 'set', user: user })
+                dispatch({type: 'set', token: token })
+                await SecureStore.setItemAsync('token',token);
+
+                //REDIRECCION A SOLIOCITAR
+                Actions.push('root')
+                dispatch({type: 'set', session: 'true' })
+                formik.resetForm()
+                setMensaje(null)
+                dispatch({type: 'set', spinner: false })
+                
+                  
+            } catch (error) {
+                console.log(error)
+                dispatch({type: 'set', spinner: false })
+                setTimeout(() =>{
+                    setMensaje(null)
+                }, 2500)
+            }
+         },
+       });
 
     return (
         <Container>
+            <SpinnerC></SpinnerC>
             <StatusBar barStyle='dark-content'></StatusBar>
             <BackgroundImg source={require('../assets/background.jpg')}>
                 <SafeAreaView>
-                    <MainContent>
+                    <MainContent style={styles.scrollView1}>
                         <ImagenLogo source={require('../assets/logo.png')} />
                     </MainContent>
-                    <BottomContent>
+                    <BottomContent style={styles.scrollView2}>
+                      <KeyboardAwareScrollView>
                             <Text dark smalllarge>Email</Text>
                             <DividerEmpty x1/>
-                            <TextoInput dark large></TextoInput>
+                            <TextoInput id="email" name="email"  dark large
+                             onChangeText={formik.handleChange('email')} 
+                             onBlur={formik.handleBlur('email')} 
+                             value={formik.values.email}
+                             style={formik.errors.email ?{borderWidth:0.8 , borderColor:'red'}:""}
+                            />
                             <DividerEmpty x1/>
                             <Text dark smalllarge>Contraseña</Text>
                             <DividerEmpty x1/>
-                            <TextoInput secureTextEntry={true} dark large></TextoInput>
+                            <TextoInput secureTextEntry={true} dark large id="contrasena" name="contrasena"   
+                            value={formik.values.contrasena} 
+                            onChangeText={formik.handleChange('contrasena')} 
+                            secureTextEntry={true}
+                            style={formik.errors.contrasena ?{borderWidth:0.8 , borderColor:'red'}:""}
+                            />
                             <DividerEmpty x2/>
-                            <Boton1 onPress={botonLogin} title="Ingresar"/>
+                            <BotonCustom title="Ingresar" onPress={formik.handleSubmit}></BotonCustom>
+                            <DividerEmpty x1/>
+                            <BotonCustom title="Registrar" onPress={() => Actions.register()}></BotonCustom>
+                            <DividerEmpty x1/>
+                            
+                            </KeyboardAwareScrollView>
                     </BottomContent>
                 </SafeAreaView>
             </BackgroundImg>
         </Container>
     );
 }
-
-
-const Container = styled.View`
-    flex:1;
-    background-color: #FFD740
-`;
-const Text = styled.Text`
-    color: ${(props) => props.dark ? "#000" : "#FFF"};
-   
-    ${({title , large , small , smalllarge}) =>{
-        switch (true) {
-            case title:
-                return `font-size:30px;`;
-            case large:
-                return `font-size:20px;`;
-            case smalllarge:
-                return `font-size:15px;`;
-            case small:
-                return `font-size:13px;`;
+//FIX SCROLL VIEW ANDROID IOS
+const styles = StyleSheet.create({
+    ...Platform.select({
+        'android':{
+            scrollView1: {
+                height: '25%',
+                width: '100%'
+              },
+              scrollView2: {
+                  height: '75%',
+                  width: '100%',
+                  paddingBottom: 100
+                }
+        },
+        'ios':{
+            scrollView1: {
+                height: '20%',
+                width: '100%'
+              },
+              scrollView2: {
+                  height: '80%',
+                  width: '100%'
+                }
         }
-    }}
-`;
-const BackgroundImg = styled.ImageBackground`
-    width:100%;
-`;
-
-const ImagenLogo = styled.Image`
-    width:150px;
-    height:150px;
-`;
-
-const MenuBar = styled.View`
-    flex-direction: row;
-    justify-content: space-between;
-    padding:16px;
-`;
-
-const Back = styled.View`
-    flex-direction: row;
-    align-items: center;
-`;
-
-const MainContent = styled.View`
-    padding: 0 29%;
-    margin: 100px 0 20px 0;
-   
-`;
-
-
-const BottomContent = styled.View`
-    background-color: #FFD740;
-    padding: 40px 20px 0px 20px;
-    border-top-left-radius: 40px;
-    border-top-right-radius: 40px;
-    
-`;
-
-const Divider = styled.View`
-    border-bottom-color: #000;
-    border-bottom-width: 2px;
-    width:150px;
-    margin:8px 0;
-`;
-const DividerEmpty = styled.View`
-${({x1 , x2 , x3}) =>{
-    switch (true) {
-        case x1:
-            return `margin:5px;`;
-        case x2:
-            return `margin:10px;`;
-        case x3:
-            return `margin:15px;`;
-    }
-}}
-    
-`;
-
-const Boton1 = styled.Button`
-    background-color: #30F9BB;
-    height:100px;
-`;
-
-const TextoInput = styled.TextInput`
-    background-color:#fff;
-    height:40px;
-    border-radius:40px;
-    padding-left:10px;
-    padding-right:10px;
-`;
+    })   
+  });
 
 export default LoginScreen;

@@ -1,15 +1,16 @@
 {
   "expo": {
-    "name": "SingleApp",
-    "slug": "SingleApp",
+    "name": "RapiCar",
+    "slug": "RapiCar",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./app/assets/icon.png",
     "splash": {
-      "image": "./app/assets/splash.jpg",
+      "image": "./app/assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#FFD740"
     },
+    "sdkVersion": "39.0.2",
     "updates": {
       "fallbackToCacheTimeout": 0
     },
@@ -17,7 +18,13 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier":"com.rapicar.rapicar",
+      "buildNumber": "1.0.0"
+    },
+    "android": {
+      "package": "com.rapicar.rapicar",
+      "versionCode": 1
     },
     "web": {
       "favicon": "./app/assets/favicon.png"

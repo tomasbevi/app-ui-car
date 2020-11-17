@@ -1,8 +1,9 @@
 #  Aplication about offers vehicles for hire, made it on React Native.
 
+Expo , React-native , Redux , GraphQL , Strapi CMS , MongoAtlas
+
 ![Image of Rapicar Login](https://www.tomasbevi.com.ar/files/rapicar.gif)
 
-Expo , React-native , Redux , GraphQL , Strapi CMS , MongoAtlas
 
 ### Installation
 

@@ -10,20 +10,15 @@
       "resizeMode": "contain",
       "backgroundColor": "#FFD740"
     },
-    "sdkVersion": "39.0.2",
+    "sdkVersion": "39.0.0",
     "updates": {
       "fallbackToCacheTimeout": 0
     },
     "assetBundlePatterns": [
       "**/*"
     ],
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier":"com.rapicar.rapicar",
-      "buildNumber": "1.0.0"
-    },
     "android": {
-      "package": "com.rapicar.rapicar",
+      "package": "com.mscc.o2ng",
       "versionCode": 1
     },
     "web": {

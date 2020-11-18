@@ -4,6 +4,8 @@ Expo , React-native , Redux , GraphQL , Strapi CMS , MongoAtlas
 
 ![Image of Rapicar Login](https://www.tomasbevi.com.ar/files/rapicar.gif)
 
+Download from Play Store (android) - <a target="_blank" href="https://play.google.com/store/apps/details?id=com.mscc.o2ng">Link</a>
+
 
 ### Installation
 

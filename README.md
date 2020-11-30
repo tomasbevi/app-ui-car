@@ -1,11 +1,16 @@
-#  Aplication about offers vehicles for hire, made it on React Native.
+#  V2 Aplication about offers vehicles for hire, made it on React Native.
 
 Expo , React-native , Redux , GraphQL , Strapi CMS , MongoAtlas
 
-Image Version 2 Image
+ Version 2 - User Cliente
+
 ![Image of Rapicar](https://www.tomasbevi.com.ar/files/v2.gif)
 
-Version 1 Online
+ Version 2 - User Partner
+
+![Image of Rapicar](https://www.tomasbevi.com.ar/files/v2partner.gif)
+
+Version 1 Online (OLD VERSION)
 Download from Play Store (android) - <a target="_blank" href="https://play.google.com/store/apps/details?id=com.mscc.o2ng">Link</a>
 
 ### Explanation

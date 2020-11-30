@@ -16,6 +16,9 @@ const Tab = createMaterialBottomTabNavigator();
       initialRouteName="Solicitudes"
       shifting={true}
       sceneAnimationEnabled={true}
+      activeColor="#f0edf6"
+      inactiveColor="#7C6724"
+      barStyle={{ backgroundColor: '#D8BD39' }}
     >
       <Tab.Screen
         name="Perfil"

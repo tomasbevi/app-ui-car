@@ -2,9 +2,16 @@
 
 Expo , React-native , Redux , GraphQL , Strapi CMS , MongoAtlas
 
-![Image of Rapicar Login](https://www.tomasbevi.com.ar/files/rapicar.gif)
+Image Version 2 Image
+![Image of Rapicar](https://www.tomasbevi.com.ar/files/v2.gif)
 
+Version 1 Online
 Download from Play Store (android) - <a target="_blank" href="https://play.google.com/store/apps/details?id=com.mscc.o2ng">Link</a>
+
+### Explanation
+La app funciona de manera real , donde se generan solicitudes para solicitar un automovil.
+Su funcionamiento se divide en dos  , uno como cliente que es el encargado de realizar las solicitudes.
+Y por otra parte usuario partner que es el encargado de tomar o aceptar las solicitudes que los usuarios realizan.
 
 
 ### Installation

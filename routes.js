@@ -10,14 +10,24 @@ import SolicitarScreen from './app/screens/SolicitarScreen';
 import YendoScreen from './app/screens/YendoScreen';
 import HistorialScreen from './app/screens/HistorialScreen';
 
+//PARTNER IMPORT
+import HistorialScreenPartner from './app/screens/partner/HistorialScreenPartner';
+import YendoScreenPartner from './app/screens/partner/YendoScreenPartner';
+
+//MENU BOTTOM
+//import MyTabs from './app/components/menu'
+//import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+//const Tab = createBottomTabNavigator();
 
 
 const Routes = () => {
-
+  
 
    var logged = useSelector(state => state.session)
    var user = useSelector(state => state.user)
    var token = useSelector(state => state.token)
+   var partner = useSelector(state => state.partner)
+  // var ciudade = useSelector(state => state.ciudades)
 
 
  if(logged=='false' || logged==false || logged==null){
@@ -33,19 +43,32 @@ const Routes = () => {
  }
 
   if(logged=='true') {
-   return (
-      <Router>
-         <Scene hideNavBar >
-            <Stack key = "root" hideNavBar={true}>
-               <Scene drawer={true} key = "solicitar" component = {SolicitarScreen} intial={true}  title = "Solicitar" />
-                <Scene drawer={true} key = "yendo" component = {YendoScreen} title = "Yendo" />
-               <Scene drawer={true} key = "historial" component = {HistorialScreen} title = "Historial" />
-      
-            </Stack>
-         </Scene>
-      </Router>
-
-   )
+      if(partner == 'true') {
+            //USUARIO PARTNER LOGEADO         
+            return (
+               <Router>
+                  <Scene hideNavBar >
+                     <Stack key = "root" hideNavBar={true}>
+                        <Scene  key = "historialPartner" component = {HistorialScreenPartner} title = "Solicitudes" />
+                        <Scene  key = "yendoPartner" component = {YendoScreenPartner} title = "Yendo" />
+                     </Stack>
+                  </Scene>
+               </Router>
+            )
+      }else{
+            //USUARIO NORMAL LOGEADO
+            return (
+               <Router>
+                  <Scene hideNavBar>
+                     <Stack key = "root" hideNavBar={true}>
+                        <Scene  key = "solicitar" component = {SolicitarScreen} intial={true}  title = "Solicitar" />
+                        <Scene  key = "yendo" component = {YendoScreen} title = "Yendo" />
+                        <Scene  key = "historial" component = {HistorialScreen} title = "Historial" />
+                     </Stack>
+                  </Scene>
+               </Router>
+            )
+      }
    }else{
       return (
          <Router>

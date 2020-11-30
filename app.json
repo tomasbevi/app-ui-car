@@ -19,7 +19,8 @@
     ],
     "android": {
       "package": "com.mscc.o2ng",
-      "versionCode": 1
+      "versionCode": 1,
+      "useNextNotificationsApi": true
     },
     "web": {
       "favicon": "./app/assets/favicon.png"

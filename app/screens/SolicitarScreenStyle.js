@@ -51,8 +51,8 @@ font-size:10px
 export const BottomContent = styled.View`
     background-color: #FFD740;
     padding: 30px 20px 0px 20px;
-    border-top-left-radius: 40px;
-    border-top-right-radius: 40px;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
     
 `;
 export const Divider = styled.View`

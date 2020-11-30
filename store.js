@@ -3,8 +3,12 @@ import { createStore } from 'redux'
 const initialState = {
   session: 'false',
   user: '',
+  userdata: {},
+  ciudades:'',
   token: '',
-  spinner: false
+  spinner: false,
+  partner: 'false',
+
 }
 
 const changeState = (state = initialState, { type, ...rest }) => {

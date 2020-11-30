@@ -1,9 +1,9 @@
 import React from 'react';
 import {View, StyleSheet, TouchableOpacity, Text, Platform} from 'react-native';
 
-export default BotonCustom = ({ onPress, title }) => (
-    <TouchableOpacity onPress={onPress} style={styles.appButtonContainer}>
-      <Text style={styles.appButtonText}>{title}</Text>
+export default BotonCustom = ({ onPress, title, style , styletext}) => (
+    <TouchableOpacity onPress={onPress} style={[styles.appButtonContainer , style]}>
+      <Text style={[styles.appButtonText , styletext]}>{title}</Text>
     </TouchableOpacity>
   );
 

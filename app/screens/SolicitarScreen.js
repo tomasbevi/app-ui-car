@@ -1,10 +1,9 @@
 import React , {useState} from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 import {StatusBar,SafeAreaView, StyleSheet} from 'react-native';
-import * as SecureStore from 'expo-secure-store';
 import  {AntDesign} from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons'; 
-import { Actions } from 'react-native-router-flux';
+import { useNavigation } from '@react-navigation/native';
 import { Container, BackgroundImg, MenuBar, MainContent, TitleContent, Text, Divider, BottomContent, DividerEmpty, TextoInput, TextTitulo, Boton1 } from './SolicitarScreenStyle';
 
 import {  useFormik  } from 'formik';
@@ -16,7 +15,7 @@ import { useMutation } from '@apollo/client';
 import {createSolicitude as SOLICITUD_MUTATION} from '../graphql/mutations.gql';
 
 const SolicitarScreen = () => {
-
+  const navigation = useNavigation();
   const [mensaje , setMensaje] = useState(null)
   
   const mostrarMensaje = () =>{
@@ -25,28 +24,13 @@ const SolicitarScreen = () => {
     )
 }
 
-
   const [ solicitud ] = useMutation(SOLICITUD_MUTATION);
   
   const dispatch = useDispatch()
  
-
-    const removeValue = async () => {
-        try {
-          //VACIO EL TOKEN EN EL LOCAL STORAGE
-           await SecureStore.deleteItemAsync('token')
-           //VACIO EL STORE
-           Actions.reset('root')
-           dispatch({type: 'set', session: 'false' })
-           dispatch({type: 'set', user: '' })
-           dispatch({type: 'set', token: '' })
-        } catch(e) {
-          console.log(e)
-        }
-      }
-  
     const user = useSelector(state => state.user)
-
+    const ciudades = useSelector(state => state.ciudades)
+  
     const formikSolicitud = useFormik({
       initialValues:  {
           calle:'',
@@ -59,15 +43,15 @@ const SolicitarScreen = () => {
               comentario: Yup.string()
       }),
       onSubmit: async values => { 
-              dispatch({type: 'set', spinner: true })
+             dispatch({type: 'set', spinner: true })
               const {calle , altura , comentario } = values
               try { 
-                 setMensaje("solicitando...")
+                 //setMensaje("solicitando...")
                   const resultados = await solicitud({
                       variables: {
                         input:{
                             data:{
-                              calle , altura , comentario, user
+                              calle , altura , comentario, user , ciudades
                             }
                         }
                         }
@@ -80,12 +64,12 @@ const SolicitarScreen = () => {
                   //REDIRECCION A SOLIOCITAR
                     dispatch({type: 'set', spinner: false })
                     formikSolicitud.resetForm()
-                    Actions.yendo(id)
+                    navigation.navigate('Yendo',id)
                 
               } catch (error) {
                   dispatch({type: 'set', spinner: false })
-                  //console.log(error)
-                  //console.log(error.message)
+                  console.log(error)
+                  console.log(error.message)
                   setMensaje("Ocurrio un Error")
                   setTimeout(() =>{
                       setMensaje(null)
@@ -102,7 +86,9 @@ const SolicitarScreen = () => {
             <BackgroundImg source={require('../assets/background.jpg')}>
                 <SafeAreaView >
                     <MenuBar>
-                        <FontAwesome5 onPress={Actions.historial} name="bars" size={24}/>
+                      {/*}
+                        <FontAwesome5 onPress={() => navigation.push("Historial")} name="bars" size={24}/>
+                      {*/}
                     </MenuBar>
                     <MainContent style={styles.scrollView1}>
                         <TitleContent>
@@ -113,7 +99,7 @@ const SolicitarScreen = () => {
                     </MainContent>
                     <BottomContent style={styles.scrollView2}>
                       <KeyboardAwareScrollView>
-                                <Text dark  bold>Calle * { formikSolicitud.errors.calle ? <Text dark>{formikSolicitud.errors.calle}</Text> : null}</Text>
+                                <Text dark  bold>Calle * <Text style={{color:'red' , fontSize:13}}>{formikSolicitud.errors.calle ?formikSolicitud.errors.calle:""}</Text></Text>
                                 <DividerEmpty x1/>
                                 <TextoInput dark large 
                                 id="calle"
@@ -125,7 +111,7 @@ const SolicitarScreen = () => {
                                 />
                                 
                                 <DividerEmpty x1/>
-                                <Text dark  bold>Altura * { formikSolicitud.errors.altura ? <Text dark>{formikSolicitud.errors.altura}</Text> : null}</Text>
+                                <Text dark  bold>Altura * <Text style={{color:'red' , fontSize:13 }}>{formikSolicitud.errors.altura ?formikSolicitud.errors.altura:""}</Text></Text>
                                 <DividerEmpty x1/>
                                 <TextoInput dark large 
                                 id="altura"
@@ -149,7 +135,7 @@ const SolicitarScreen = () => {
                                 <DividerEmpty x2/>
                                   <BotonCustom onPress={formikSolicitud.handleSubmit} title="Solicitar" ></BotonCustom>
                                  <DividerEmpty x1/>
-                                  <BotonCustom title="Salir" onPress={removeValue}></BotonCustom>
+                                 
                             </KeyboardAwareScrollView>
                     </BottomContent>
                 </SafeAreaView>
@@ -163,6 +149,7 @@ const styles = StyleSheet.create({
   ...Platform.select({
       'android':{
           scrollView1: {
+              paddingTop:40,
               height: '10%',
               width: '100%'
             },

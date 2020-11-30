@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+
 export const Container = styled.View`
     flex:1;
     background-color: #FFD740
@@ -8,7 +9,7 @@ export const TextTitulo = styled.Text`
     font-weight: ${(props) => props.bold ? "bold" : "normal"};
     ${Platform.select({
         'ios':{
-            fontSize:31
+            fontSize:30
         }, 
         'android':{
             fontSize:20
@@ -21,7 +22,6 @@ export const Text = styled.Text`
     ${Platform.select({
         'ios':{
             fontSize:20
-
         }
     })}
 `;
@@ -38,14 +38,16 @@ export const Back = styled.View`
     align-items: center;
 `;
 export const MainContent = styled.View`
-    padding: 0 32px;
-    margin: 30% 0 5% 0;
+    padding: 0px 3%;
+    margin: 1% 0 5% 0;
 `;
 export const TitleContent = styled.View``;
 export const BottomContent = styled.View`
-        padding: 20px 20px 0px 20px;
-        border-top-left-radius: 0px;
-        border-top-right-radius: 0px;
+    background-color: #FFD740;
+    padding: 20px 20px 0px 20px;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    
 `;
 export const Divider = styled.View`
     border-bottom-color: #000;
@@ -53,7 +55,7 @@ export const Divider = styled.View`
     width:150px;
     margin:8px 0;
 `;
-export const DividerEmpty = styled.View`
+const DividerEmpty = styled.View`
 ${({ x1, x2, x3 }) => {
         switch (true) {
             case x1:
@@ -66,7 +68,42 @@ ${({ x1, x2, x3 }) => {
     }}
     
 `;
-export const Boton1 = styled.Button`
+const Boton1 = styled.Button`
     background-color: #30F9BB;
     height:100px;
 `;
+const TextoInput = styled.TextInput`
+    background-color:#fff;
+    height:40px;
+    border-radius:40px;
+    padding-left:10px;
+    padding-right:10px;
+`;
+export const ContenedorHistorial = styled.View`
+    flex-direction: row;
+    align-items: center;
+`;
+
+export const SwipeItem = styled.View`
+    margin-bottom:5px;
+    margin-top:5px;
+    padding-bottom:7px;
+    padding-left:10px;
+    justify-content: center;
+    align-items: center;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+    background-color: ${props => {
+        switch (props.type) {
+            case "1":
+                return `#1F8933;`;
+            case "2":
+                return `#FBC02D;`;
+            case "0":
+                return `red;`;
+        }
+    }}
+`;
+

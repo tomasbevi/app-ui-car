@@ -52,9 +52,9 @@ export const MainContent = styled.View`
 export const BottomContent = styled.View`
     display: flex;
     background-color: #FFD740;
-    padding: 30px 20px 0px 20px;
-    border-top-left-radius: 40px;
-    border-top-right-radius: 40px;
+    padding: 20px 20px 0px 20px;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
     
 `;
 const Divider = styled.View`

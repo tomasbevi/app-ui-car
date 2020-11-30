@@ -16,8 +16,57 @@ query solicitudesById($id: ID!){
         comentario
         estado
         createdAt
+        ciudades{
+          nombreCiudad
+        }
     }
 }
 
+query solicitudesByPartner($input:String!, $ciudades:String!){
+  solicitudes(where: {estado: $input , ciudades: $ciudades}, sort: "createdAt:DESC" , limit: 5){
+        id
+        calle
+        altura
+        comentario
+        estado
+        createdAt
+        ciudades{
+          nombreCiudad
+        }
+  }
+}
+
+query solicitudesByPartnerAcepted( $acceptedby:String!){
+  solicitudes(where: { acceptedby: $acceptedby}, sort: "updatedAt:DESC" , limit: 5){
+        id
+        calle
+        altura
+        comentario
+        estado
+        createdAt
+        ciudades{
+          nombreCiudad
+        }
+  }
+}
+
+query ciudades{
+   ciudades(where: {habilitada:true}){
+    id
+    nombreCiudad
+  }
+}
 
 
+query user($user: ID!){
+  user(id:$user){
+    id
+    username
+    email
+    partner
+    ciudade{
+      id
+      nombreCiudad
+    }
+  }
+}

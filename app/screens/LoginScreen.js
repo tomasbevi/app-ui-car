@@ -1,9 +1,10 @@
-import React, {useState } from 'react';
+import React, {useState , useEffect } from 'react';
 import {StatusBar, SafeAreaView, StyleSheet} from 'react-native';
 import  BotonCustom  from '../components/Botton';
 import { useDispatch } from 'react-redux'
-import { Actions } from 'react-native-router-flux';
+import { useNavigation } from '@react-navigation/native';
 import { Container, BackgroundImg, MainContent, ImagenLogo, BottomContent, Text, DividerEmpty, TextoInput, Boton1 } from './LoginScreenStyle';
+import { Feather } from '@expo/vector-icons'; 
 import {  useFormik  } from 'formik';
 import * as Yup from 'yup';
 
@@ -13,10 +14,12 @@ import SpinnerC from "../components/Spineer"
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { useMutation } from '@apollo/client';
 
+
 import {login as LOGIN_MUTATION} from '../graphql/mutations.gql';
 
 const LoginScreen = () => {
 
+    const navigation = useNavigation();
  
     const dispatch = useDispatch()
 
@@ -26,10 +29,12 @@ const LoginScreen = () => {
 
     const mostrarMensaje = () =>{
         return(
-            <Text>{mensaje}</Text>
+            <Text>
+                <Feather name="alert-circle" size={24} color="red" />
+                <Text style={{color:'red'}}>{mensaje}</Text>
+            </Text>
         )
     }
-
 
     const formik = useFormik({
         initialValues:  {
@@ -47,7 +52,6 @@ const LoginScreen = () => {
             const slug = values.email
    
             try { 
-               setMensaje("Cargando...")
                 const resultados = await login_usuario({
                     variables: { 
                        slug , password
@@ -55,12 +59,17 @@ const LoginScreen = () => {
                  })
                 const token = await resultados.data.login.jwt
                 const user = await resultados.data.login.user.id
+                const partner = await resultados.data.login.user.partner
+                const ciudades = await resultados.data.login.user.ciudade.id
+                partner==false ? dispatch({type: 'set', partner: 'false' }) : dispatch({type: 'set', partner: 'true' })
+                dispatch({type: 'set', userdata: resultados.data.login.user })
                 dispatch({type: 'set', user: user })
                 dispatch({type: 'set', token: token })
+                dispatch({type: 'set', ciudades: ciudades })
                 await SecureStore.setItemAsync('token',token);
 
                 //REDIRECCION A SOLIOCITAR
-                Actions.push('root')
+                //navigation.reset()
                 dispatch({type: 'set', session: 'true' })
                 formik.resetForm()
                 setMensaje(null)
@@ -68,6 +77,7 @@ const LoginScreen = () => {
                 
                   
             } catch (error) {
+                setMensaje("Verifique si los campos son correctos.")
                 console.log(error)
                 dispatch({type: 'set', spinner: false })
                 setTimeout(() =>{
@@ -87,8 +97,8 @@ const LoginScreen = () => {
                         <ImagenLogo source={require('../assets/logo.png')} />
                     </MainContent>
                     <BottomContent style={styles.scrollView2}>
-                      <KeyboardAwareScrollView>
-                            <Text dark smalllarge>Email</Text>
+                      <KeyboardAwareScrollView style={{paddingRight:13}}>
+                            <Text dark smalllarge>Email * <Text style={{color:'red' , fontSize:13}}>{formik.errors.email ?formik.errors.email:""}</Text></Text>
                             <DividerEmpty x1/>
                             <TextoInput id="email" name="email"  dark large
                              onChangeText={formik.handleChange('email')} 
@@ -97,7 +107,7 @@ const LoginScreen = () => {
                              style={formik.errors.email ?{borderWidth:0.8 , borderColor:'red'}:""}
                             />
                             <DividerEmpty x1/>
-                            <Text dark smalllarge>Contraseña</Text>
+                            <Text dark smalllarge>Contraseña * <Text style={{color:'red' , fontSize:13}}>{formik.errors.contrasena ?formik.errors.contrasena:""}</Text></Text>
                             <DividerEmpty x1/>
                             <TextoInput secureTextEntry={true} dark large id="contrasena" name="contrasena"   
                             value={formik.values.contrasena} 
@@ -105,12 +115,16 @@ const LoginScreen = () => {
                             secureTextEntry={true}
                             style={formik.errors.contrasena ?{borderWidth:0.8 , borderColor:'red'}:""}
                             />
+                            {mensaje && mostrarMensaje()}
                             <DividerEmpty x2/>
                             <BotonCustom title="Ingresar" onPress={formik.handleSubmit}></BotonCustom>
                             <DividerEmpty x1/>
-                            <BotonCustom title="Registrar" onPress={() => Actions.register()}></BotonCustom>
+                            <BotonCustom title="Registrar" onPress={() => navigation.push('Register')}></BotonCustom>
                             <DividerEmpty x1/>
-                            
+                            {/*}
+                            <BotonCustom title="Notification" onPress={async () => await sendNotifications()}></BotonCustom>
+                            <DividerEmpty x1/>
+                            {*/}
                             </KeyboardAwareScrollView>
                     </BottomContent>
                 </SafeAreaView>

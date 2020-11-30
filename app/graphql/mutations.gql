@@ -3,18 +3,35 @@ mutation login($slug: String!, $password: String!) {
             jwt
             user{
               id
+              username
+              email
+              partner
+              ciudade{
+                id
+                nombreCiudad
+              }
             }
      }
 }
  
-mutation register($email: String!, $username: String!, $password: String!) {
-     register(input: {email: $email, username: $username, password: $password}) {
-            user {id, username, email}, jwt
+mutation register($email: String!, $username: String!, $password: String!, $ciudade: String!) {
+     register(input: {email: $email, username: $username, password: $password, ciudade: $ciudade}) {
+            jwt
+            user {
+              id
+              username
+              email
+              partner
+              ciudade{
+                id
+                nombreCiudad
+              }
+            }
      }
 }
 
 mutation createSolicitude($input: createSolicitudeInput!){
-  	createSolicitude(input:  $input){
+  	createSolicitude(input: $input){
      solicitude{
       id
       estado
@@ -33,3 +50,33 @@ mutation updateSolicitude($input:updateSolicitudeInput){
   }
 }
 
+mutation updateSolicitudePartner($input:updateSolicitudeInput){
+  updateSolicitude(input: $input){
+    	solicitude{
+        id
+        estado
+        updatedAt
+        acceptedby
+        {
+          username
+          id
+          }
+      }
+  }
+}
+  	
+
+mutation updateUser($input: updateUserInput){
+  	updateUser(input:$input ){
+    		user{
+          id
+          username
+          email
+          partner
+          ciudade{
+            id
+            nombreCiudad
+          }
+        }
+  }
+}

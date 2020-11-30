@@ -2,19 +2,19 @@ import React from 'react'
 import { ScrollView , Alert} from 'react-native';
 import {  Text,  DividerEmpty } from '../screens/YendoScreenStyle';
 import  {AntDesign} from '@expo/vector-icons';
-import { Actions } from 'react-native-router-flux';
+import { useNavigation } from '@react-navigation/native';
 import { useDispatch } from 'react-redux'
 import { useMutation } from '@apollo/client';
 import {updateSolicitude as UPDATE_SOLICITUD} from '../graphql/mutations.gql';
 
 
 const DetailsYendo = (data) => {
-    data = data.data;
-    const dispatch = useDispatch()
+  const navigation = useNavigation();
+  data = data.data;
+  const dispatch = useDispatch()
+  const [ updateSolicitud ] = useMutation(UPDATE_SOLICITUD);
 
-    const [ updateSolicitud ] = useMutation(UPDATE_SOLICITUD);
-
-    async function acciones(solicitudid , estado){
+  async function acciones(solicitudid , estado){
       dispatch({type: 'set', spinner: true })
      const resultado = await updateSolicitud({
           variables: { 
@@ -67,10 +67,10 @@ const DetailsYendo = (data) => {
     switch (data.estado){
                             case "0":
                                 return(
-                                  <ScrollView onScroll={() => Actions.refresh()}>
+                                  <ScrollView >
                                   <Text dark smalllarge>Te vamos a ir a buscar a la dirección</Text>
                                   <DividerEmpty x1/>
-                                  <Text dark large><AntDesign name="check" size={15} /> {data.calle} {data.altura} - Dolores</Text>
+                                  <Text dark large><AntDesign name="check" size={15} /> {data.calle} {data.altura} - {data.ciudades.nombreCiudad}</Text>
                                   <DividerEmpty x2/>
                                   <BotonCustom title="Quiero Cancelar" onPress={botonCancelar}></BotonCustom>
                                   </ScrollView>
@@ -78,10 +78,10 @@ const DetailsYendo = (data) => {
                               break;
                               case "1":
                                 return(
-                                  <ScrollView onScroll={() => () => Actions.refresh()}>
+                                  <ScrollView >
                                   <Text dark smalllarge>Te estámos yendo a buscar a la dirección</Text>
                                   <DividerEmpty x1/>
-                                  <Text dark large><AntDesign name="check" size={15} /> {data.calle} {data.altura} - Dolores</Text>
+                                  <Text dark large><AntDesign name="check" size={15} /> {data.calle} {data.altura} - {data.ciudades.nombreCiudad} </Text>
                                   <DividerEmpty x2/>
                                   <BotonCustom title="Ya llego!" onPress={botonLlego}></BotonCustom>
                                   <DividerEmpty x1/>
@@ -91,20 +91,20 @@ const DetailsYendo = (data) => {
                               break;
                               case "2":
                                 return(
-                                  <ScrollView onScroll={() => () => Actions.refresh()}>
+                                  <ScrollView >
                                   <Text dark smalllarge>El siguente viaje se registro a la dirección:</Text>
                                   <DividerEmpty x1/>
-                                  <Text dark large><AntDesign name="check" size={15} /> {data.calle} {data.altura} - Dolores</Text>
+                                  <Text dark large><AntDesign name="check" size={15} /> {data.calle} {data.altura} - {data.ciudades.nombreCiudad}</Text>
                                   <DividerEmpty x2/>
                                   </ScrollView>
                                 )
                               break;
                               case "3":
                                 return(
-                                  <ScrollView onScroll={() => () => Actions.refresh()}>
+                                  <ScrollView >
                                   <Text dark smalllarge>El siguiente viaje se registro a la dirección: </Text>
                                   <DividerEmpty x1/>
-                                  <Text dark large><AntDesign name="check" size={15} /> {data.calle} {data.altura} - Dolores</Text>
+                                  <Text dark large><AntDesign name="check" size={15} /> {data.calle} {data.altura} - {data.ciudades.nombreCiudad}</Text>
                                   <DividerEmpty x2/>
                                   </ScrollView>
                                 )

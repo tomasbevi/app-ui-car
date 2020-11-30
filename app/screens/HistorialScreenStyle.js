@@ -38,15 +38,15 @@ export const Back = styled.View`
     align-items: center;
 `;
 export const MainContent = styled.View`
-    padding: 0px 3%;
-    margin: 1% 0 5% 0;
+    padding: 0px 0px 0px 3%;
+    margin: -5px 0 8px 0;
 `;
 export const TitleContent = styled.View``;
 export const BottomContent = styled.View`
     background-color: #FFD740;
     padding: 20px 20px 0px 20px;
-    border-top-left-radius: 40px;
-    border-top-right-radius: 40px;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
     
 `;
 export const Divider = styled.View`
